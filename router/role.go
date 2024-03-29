@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"stuLook-service/controller"
 )
 
 func RoleRouter(engine *gin.Engine) {
