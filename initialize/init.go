@@ -1,8 +1,8 @@
 package initialize
 
 func Init() {
-	//initialize.MongoInit()
-	//initialize.RedisInit()
+	//MongoInit()
+	RedisInit()
 	MysqlInit()
 	SnowFlakeInit()
 	LogInit()
