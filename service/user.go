@@ -9,7 +9,6 @@ import (
 	"math/rand"
 	"strconv"
 	"stuLook-service/global"
-	"stuLook-service/middleware"
 	"stuLook-service/model"
 	"stuLook-service/utils"
 	"time"
@@ -47,15 +46,16 @@ func Login(user model.User) utils.Response {
 		return utils.ErrorMess("密码错误", err.Error())
 	}
 	//生成token
-	token, err := middleware.CreateToken(DBUser)
-	if err != nil {
-		return utils.ErrorMess("生成token失败", err.Error())
-	}
-	res := map[string]interface{}{
-		"_id":      DBUser.Id,
-		"Name":     DBUser.Name,
-		"password": DBUser.Password,
-		"token":    token,
-	}
-	return utils.SuccessMess("登陆成功", res)
+	//token, err := ""
+	////middleware.CreateToken(DBUser)
+	//if err != nil {
+	//	return utils.ErrorMess("生成token失败", err.Error())
+	//}
+	//res := map[string]interface{}{
+	//	"_id":      DBUser.Id,
+	//	"Name":     DBUser.Name,
+	//	"password": DBUser.Password,
+	//	//"token":    token,
+	//}
+	return utils.SuccessMess("登陆成功", "res")
 }
