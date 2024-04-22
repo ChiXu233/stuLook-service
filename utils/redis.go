@@ -3,7 +3,6 @@ package utils
 import (
 	"context"
 	"fmt"
-	"github.com/redis/go-redis/v9"
 	"stuLook-service/global"
 	"time"
 )
@@ -38,12 +37,12 @@ func (r Redis) GetRedisType(key string) string {
 }
 
 // DelRedisKey 删除缓存项
-func (r Redis) DelRedisKey(keys []string) {
-	n, err := global.RedisClient.Del(ctx, keys...).Result()
+func (r Redis) DelRedisKey(key string) error {
+	err := global.RedisClient.Del(ctx, key).Err()
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("redisUtils(sds)删除失败:%w", err)
 	}
-	fmt.Printf("成功删除了 %v 个\n", n)
+	return nil
 }
 
 // ExistsRedisKey 检测key是否存在
@@ -112,11 +111,12 @@ func (r Redis) RedisFlushDB() string {
 }
 
 // RedisSetValue Set():设置;仅仅支持字符串(包含数字)操作，不支持内置数据编码功能。如果需要存储Go的非字符串类型，需要提前手动序列化，获取时再反序列化。
-func (r Redis) RedisSetValue(key, value string, t time.Duration) {
+func (r Redis) RedisSetValue(key, value string, t time.Duration) error {
 	err := global.RedisClient.Set(ctx, key, value, t).Err()
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("redisUtils(sds)设置失败:%w", err)
 	}
+	return nil
 }
 
 // RedisSetValueEx SetEX():设置并指定过期时间
@@ -128,11 +128,10 @@ func (r Redis) RedisSetValueEx(key, value string, t time.Duration) {
 }
 
 // RedisGetValue Get():获取
-func (r Redis) RedisGetValue(key string) string {
+func (r Redis) RedisGetValue(key string) (string, error) {
 	value, err := global.RedisClient.Get(ctx, key).Result()
-	if err != redis.Nil && err != nil {
-		fmt.Println("key不存在")
-		panic(err)
+	if err != nil {
+		return "", fmt.Errorf("redis(sds)读取失败%w", err)
 	}
-	return value
+	return value, nil
 }
