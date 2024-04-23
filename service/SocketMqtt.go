@@ -7,16 +7,32 @@ import (
 	"stuLook-service/global"
 	"stuLook-service/model"
 	"stuLook-service/utils"
+	"sync"
 	"time"
 )
 
+var wg sync.WaitGroup
+
 func ReceiveMqtt() {
-	global.Pool.Put(&model.Task{
+	wg.Add(1)
+	task := &model.Task{
 		Handler: func(v ...interface{}) {
+			wg.Done()
 			MqttClientDTU(global.MqTest, "rt-base-West")
 		},
 		Params: []interface{}{global.MqTest, "rt-base-West"},
-	})
+	}
+	global.Pool.Put(task)
+	wg.Wait()
+	//// 安全关闭任务池（保证已加入池中的任务被消费完）
+	//pool.Close()
+	//// 如果任务池已经关闭, Put() 方法会返回 ErrPoolAlreadyClosed 错误
+	//err = pool.Put(&mortar.Task{
+	//	Handler: func(v ...interface{}) {},
+	//})
+	//if err != nil {
+	//	fmt.Println(err) // print: pool already closed
+	//}
 }
 
 func MqttClientDTU(mqttClient mqtt.Client, topic string) {

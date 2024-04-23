@@ -30,10 +30,10 @@ type Task struct {
 
 // Pool task pool
 type Pool struct {
-	capacity       uint64
-	runningWorkers uint64
-	status         int64
-	chTask         chan *Task
+	capacity       uint64     //池的容量
+	runningWorkers uint64     //当前运行的 worker（goroutine）数量
+	status         int64      //任务池的状态 status（运行中或已关闭, 用于安全关闭任务池）
+	chTask         chan *Task //任务队列（channel）chTask
 	PanicHandler   func(interface{})
 	sync.Mutex
 }
